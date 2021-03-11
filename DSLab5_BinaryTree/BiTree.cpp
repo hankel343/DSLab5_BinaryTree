@@ -1,20 +1,4 @@
 #include "BiTree.h"
-/*Helper function prototypes*/
-//Helper functions for BiTree::Add():
-void Insert(TreeNode*& pRoot, ItemType iNewItem);
-void CreateNode(TreeNode*& pRoot, ItemType iNewItem);
-//Helper functions for BiTree::Remove():
-void FindDeletionPoint(TreeNode*& pRoot, ItemType iDeletedItem);
-void Delete(TreeNode*& pRoot, ItemType iDeletedItem);
-void GetInOrderPredecessor(TreeNode* pRoot, ItemType& iDeletedItem);
-//Helper function for BiTree::Print():
-void InOrderTraversal(TreeNode* pRoot);
-//Helper function for BiTree::TPrint():
-void PrintGraph(TreeNode* pRoot, int nSpacingValue, int nLevelValue);
-//Helper function for BiTree::RPrint():
-void ReverseInOrder(TreeNode* pRoot);
-//Helper function for BiTree::~BiTree():
-void Destroy(TreeNode* pRoot);
 
 BiTree::BiTree()
 {
@@ -23,11 +7,12 @@ BiTree::BiTree()
 
 void BiTree::Add(ItemType iNewItem)
 {
-	Insert(pRoot, iNewItem);
+	if (IsFull() == false)
+		Insert(pRoot, iNewItem);
 }
 
 //Helper function to BiTree::Add()
-void Insert(TreeNode*& pRoot, ItemType iNewItem)
+void BiTree::Insert(TreeNode*& pRoot, ItemType iNewItem)
 {
 	if (pRoot == NULL)
 		CreateNode(pRoot, iNewItem);
@@ -38,7 +23,7 @@ void Insert(TreeNode*& pRoot, ItemType iNewItem)
 }
 
 //Helper function to BiTree::Add()
-void CreateNode(TreeNode*& pRoot, ItemType iNewItem)
+void BiTree::CreateNode(TreeNode*& pRoot, ItemType iNewItem)
 {
 	pRoot = new TreeNode;
 	pRoot->iData = iNewItem;
@@ -47,11 +32,12 @@ void CreateNode(TreeNode*& pRoot, ItemType iNewItem)
 
 void BiTree::Remove(ItemType iDeletedItem)
 {
-	FindDeletionPoint(pRoot, iDeletedItem);
+	if (IsEmpty() == false)
+		FindDeletionPoint(pRoot, iDeletedItem);
 }
 
 //Helper function to BiTree::Remove()
-void FindDeletionPoint(TreeNode*& pRoot, ItemType iDeletedItem)
+void BiTree::FindDeletionPoint(TreeNode*& pRoot, ItemType iDeletedItem)
 {
 	if (iDeletedItem.ComparedTo(pRoot->iData) == EQUAL)
 		Delete(pRoot, iDeletedItem);
@@ -62,7 +48,7 @@ void FindDeletionPoint(TreeNode*& pRoot, ItemType iDeletedItem)
 }
 
 //Helper function to BiTree::Remove()
-void Delete(TreeNode*& pRoot, ItemType iDeletedItem)
+void BiTree::Delete(TreeNode*& pRoot, ItemType iDeletedItem)
 {
 	TreeNode* pTemp = pRoot;
 
@@ -81,12 +67,29 @@ void Delete(TreeNode*& pRoot, ItemType iDeletedItem)
 }
 
 //Helper function to BiTree::Remove()
-void GetInOrderPredecessor(TreeNode* pRoot, ItemType& iDeleteItem)
+void BiTree::GetInOrderPredecessor(TreeNode* pRoot, ItemType& iDeleteItem)
 {
 	while (pRoot->pRight != NULL)
 		pRoot = pRoot->pRight;
 
 	iDeleteItem = pRoot->iData;
+}
+
+bool BiTree::IsEmpty()
+{
+	return (pRoot == NULL);
+}
+
+bool BiTree::IsFull()
+{
+	try
+	{
+		TreeNode* pTest = new TreeNode;
+		delete pTest;
+		return false;
+	} catch (std::bad_alloc exception) {
+		return true;
+	}
 }
 
 void BiTree::Print()
@@ -95,7 +98,7 @@ void BiTree::Print()
 }
 
 //Helper function to BiTree::Print()
-void InOrderTraversal(TreeNode* pRoot)
+void BiTree::InOrderTraversal(TreeNode* pRoot)
 {
 	if (pRoot != NULL)
 	{
@@ -111,9 +114,9 @@ void BiTree::TPrint()
 }
 
 //Helper function to BiTree::TPrint()
-void PrintGraph(TreeNode* pRoot, int nSpacingValue, int nLevelValue)
+void BiTree::PrintGraph(TreeNode* pRoot, int nSpacingValue, int nLevelValue)
 {
-	//Base case and end of recursive calls to PrintGraph
+	//Base case and end of recursive calls to PrintGraph()
 	if (pRoot == NULL)
 		return;
 
@@ -122,15 +125,15 @@ void PrintGraph(TreeNode* pRoot, int nSpacingValue, int nLevelValue)
 	//structure of this function.
 	nSpacingValue += nLevelValue;
 
-	//Recursive call to travel to the root of the right subtree.
+	//Recursive call to travel to the bottom of the right subtree and work back up.
 	PrintGraph(pRoot->pRight, nSpacingValue, nLevelValue);
 
 	std::cout << std::endl;
-	for (int i = nLevelValue; i < nSpacingValue; i++)
+	for (int i = nLevelValue; i < nSpacingValue; i++) //For loop prints out tab characters equal to the current node's level
 		std::cout << '\t';
 	std::cout << pRoot->iData.Get() << "\n";
 
-	//Recursive call to travel to the root of the left subtree.
+	//Recursive call to travel to the bottom of the left subtree and work back up.
 	PrintGraph(pRoot->pLeft, nSpacingValue, nLevelValue);
 }
 
@@ -140,7 +143,7 @@ void BiTree::RPrint()
 }
 
 //Helper function to BiTree::RPrint()
-void ReverseInOrder(TreeNode* pRoot)
+void BiTree::ReverseInOrder(TreeNode* pRoot)
 {
 	if (pRoot != NULL)
 	{
@@ -156,7 +159,7 @@ BiTree::~BiTree()
 }
 
 //Helper function to BiTree::~BiTree()
-void Destroy(TreeNode* pRoot)
+void BiTree::Destroy(TreeNode* pRoot)
 {
 	if (pRoot != NULL)
 	{
