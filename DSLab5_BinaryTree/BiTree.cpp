@@ -59,7 +59,7 @@ void BiTree::Delete(TreeNode*& pRoot, ItemType iDeletedItem)
 	} else if (pRoot->pRight == NULL) {
 		pRoot = pRoot->pLeft; //Link made to left subtree.
 		delete pTemp;
-	} else {
+	} else { //If there are two child nodes.
 		GetInOrderPredecessor(pRoot->pLeft, iDeletedItem); //Gets data from inorder predecessor
 		pRoot->iData = iDeletedItem; //Replaces data with inorder predecessor data to preserve links to child nodes.
 		FindDeletionPoint(pRoot->pLeft, iDeletedItem); //Deletes inorder predecessor node.
@@ -113,6 +113,13 @@ void BiTree::TPrint()
 	PrintGraph(pRoot, 0, 1);
 }
 
+/*	PrintGraph is a recursive function that takes two integer parameters along with a pointer to a tree object.
+*	These two integers, nSpacingValue and nLevelValue, are used to space nodes in the binary tree in the console.
+*	nSpacingValue counts how many tabs to output, and nLevelValue represents the level of the tree.
+*	The recursive design of the function allows for nodes at the same level in the tree to have activation records that -
+*	have the same nSpacingValue parameter, thereby giving the perception that those two nodes are in the same level in the -
+*	console representation of the tree.*/
+
 //Helper function to BiTree::TPrint()
 void BiTree::PrintGraph(TreeNode* pRoot, int nSpacingValue, int nLevelValue)
 {
@@ -129,7 +136,7 @@ void BiTree::PrintGraph(TreeNode* pRoot, int nSpacingValue, int nLevelValue)
 	PrintGraph(pRoot->pRight, nSpacingValue, nLevelValue);
 
 	std::cout << std::endl;
-	for (int i = nLevelValue; i < nSpacingValue; i++) //For loop prints out tab characters equal to the current node's level
+	for (int i = nLevelValue; i < nSpacingValue; i++) //For loop prints out tab characters one less than nSpacingValue
 		std::cout << '\t';
 	std::cout << pRoot->iData.Get() << "\n";
 
